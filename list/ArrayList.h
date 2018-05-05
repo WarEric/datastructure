@@ -10,11 +10,12 @@
 class ArrayList{
 	public:
 		ArrayList(unsigned int cap = LIST_INIT_CAPACITY):
-			type_size(4), length(0), capacity(cap){ p = new int[capacity];};
-		ArrayList();
+			type_size(sizeof(int)), length(0), capacity(cap){ array = new int[capacity];};
 		ArrayList(const ArrayList &orig);
 		~ArrayList();
 
+		bool init(unsigned int cap);
+		bool destory();
 		void clear();
 		bool empty();
 		unsigned length(){return length;}
@@ -32,8 +33,9 @@ class ArrayList{
 		ArrayList& operator=(const ArrayList &orig);
 		bool operator==(const ArrayList &orig);
 	private:
-		int *p;
-		int type_size;
+		bool increase(unsigned int max);
+
+		int *array;
 		unsigned int length;
 		unsigned int capacity;
 };
