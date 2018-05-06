@@ -6,15 +6,18 @@
 #include<stdexcept>
 #include<sstream>
 #include"ArrayList.h"
+using std::ostringstream;
+using std::endl;
+using std::range_error;
+
 ArrayList::ArrayList(const ArrayList &orig)
 {
-	capacity = orig.capacity;
-	array = new int[capacity];
-	type_size = orig.size;
-	length = orig.length;
+	cap = orig.cap;
+	array = new int[cap];
+	len = orig.len;
 
 	int *dst = array, *src = orig.array;
-	for(int i = 0; i < length; i++)
+	for(int i = 0; i < len; i++)
 		*dst++ = *src++;
 }
 
@@ -24,53 +27,43 @@ ArrayList::~ArrayList()
 		delete[] array;
 }
 
-bool ArrayList::init(unsigned int cap)
+bool ArrayList::init(unsigned int capacity)
 {
 	if(array != nullptr) 
 		return false;
 
-	capacity = cap;
-	length = 0;
-	array = new int[capacity];
+	cap = capacity;
+	len = 0;
+	array = new int[cap];
 	return true;
 }
 
-bool ArrayList::destory()
+bool ArrayList::destroy()
 {
 	if(array == nullptr) return false;
 
 	delete[] array;
 	array = nullptr;
-	length = 0;
+	len = 0;
 	return true;
 }
 
 void ArrayList::clear()
 {
-	length = 0;
+	len = 0;
 }
 
 bool ArrayList::empty()
 {
-	return length > 0 ? false:true;
-}
-
-unsigned ArrayList::length()
-{
-	return length;
-}
-
-unsigned ArrayList::capacity()
-{
-	return capacity;
+	return len > 0 ? false:true;
 }
 
 int ArrayList::get(int i)
 {
-	if(i < 0 || i >= length)
+	if(i < 0 || i >= len)
 	{
 		ostringstream s;
-		s << i << " out range [0," << length << "]" << endl;
+		s << i << " out range [0," << len << "]" << endl;
 		throw range_error(s.str());
 	}
 	return *(array+i);
@@ -79,19 +72,19 @@ int ArrayList::get(int i)
 int ArrayList::contains(int value)
 {
 	int *ptr = array;
-	for(int i = 0; i < length; i++, ptr++)
+	for(int i = 0; i < len; i++, ptr++)
 		if(*ptr == value)
 			return i;
 }
 
 bool ArrayList::insert(int i, int value)
 {
-	if(i < 0 || i >= length) return false;
-	if(length >= capacity) increase(2*capacity);
+	if(i < 0 || i >= len) return false;
+	if(len >= cap) increase(2*cap);
 
-	length++;
+	len++;
 	int j;
-	for(j = length; j > i; j--)
+	for(j = len; j > i; j--)
 		array[j] = array[j-1];
 	array[j] = value;
 
@@ -100,16 +93,16 @@ bool ArrayList::insert(int i, int value)
 
 bool ArrayList::push_back(int value)
 {
-	if(length >= capacity) increase(2*capacity);
+	if(len >= cap) increase(2*cap);
 
-	array[length++] = value;
+	array[len++] = value;
 }
 
 int ArrayList::pop_front()
 {
 	int res = array[0];
-	length--;
-	for(int i = 0; i < length; i++)
+	len--;
+	for(int i = 0; i < len; i++)
 		array[i] = array[i+1];
 
 	return res;
@@ -117,40 +110,40 @@ int ArrayList::pop_front()
 
 bool ArrayList::del(int i)
 {
-	if(i < 0 || i >= length) return false;
-	length--;
-	for(; i < length; i++)
+	if(i < 0 || i >= len) return false;
+	len--;
+	for(; i < len; i++)
 		array[i] = array[i+1];
 	return true;
 }
 
 void ArrayList::traverse()
 {
-	for(int i = 0, j = length-1, mid = length/2; i < mid; i++, j--)
+	for(int i = 0, j = len-1, mid = len/2; i < mid; i++, j--)
 		array[i] = array[j];
 }
 
-
-
-ArrayList& operator=(const ArrayList &orig)
+ArrayList& ArrayList::operator=(const ArrayList &orig)
 {
-	if(this == &orig) return;
+	if(this == &orig) return *this;
 
-	destory();
-	capacity = orig.capacity;
-	init(capacity);
+	destroy();
+	cap = orig.cap;
+	init(cap);
 
-	for(int i = 0, end = orig.length; i < end; i++, length++)
+	for(int i = 0, end = orig.len; i < end; i++, len++)
 		array[i] = orig.array[i];
+
+	return *this;
 }
 
 bool ArrayList::operator==(const ArrayList &orig)
 {
 	if(this == &orig) return true;
 	if(array == nullptr || orig.array == nullptr) return false;
-	if(length != orig.length) return false;
+	if(len != orig.len) return false;
 
-	for(int i = 0; i < length; i++)
+	for(int i = 0; i < len; i++)
 		if(array[i] != orig.array[i]) return false;
 
 	return true;
@@ -158,13 +151,13 @@ bool ArrayList::operator==(const ArrayList &orig)
 
 bool ArrayList::increase(unsigned int max)
 {
-	if(max <= capacity) return false;
+	if(max <= cap) return false;
 	
-	capacity = max;
-	int *ptr = new int[capacity];
+	cap = max;
+	int *ptr = new int[cap];
 	int *dst = ptr, *src = array;
 
-	for(int i = 0; i < lenght; i++)
+	for(int i = 0; i < len; i++)
 		*dst++ = *src++;
 
 	delete array;

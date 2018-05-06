@@ -5,21 +5,21 @@
  */
 #ifndef ARRAYLIST_H_
 #define ARRAYLIST_H_
-#define LIST_INIT_CAPACITY 20;
+#define LIST_INIT_CAPACITY 20
 
 class ArrayList{
 	public:
-		ArrayList(unsigned int cap = LIST_INIT_CAPACITY):
-			type_size(sizeof(int)), length(0), capacity(cap){ array = new int[capacity];};
+		ArrayList(unsigned int capacity = LIST_INIT_CAPACITY):
+			len(0), cap(capacity){ array = new int[capacity];};
 		ArrayList(const ArrayList &orig);
 		~ArrayList();
 
 		bool init(unsigned int cap);
-		bool destory();
+		bool destroy();
 		void clear();
 		bool empty();
-		unsigned length(){return length;}
-		unsigned capacity(){return capacity;}
+		unsigned int length() const{return len;}
+		unsigned int capacity() const{return cap;}
 		int get(int i);
 		int contains(int value);
 		bool insert(int i, int value);
@@ -28,7 +28,17 @@ class ArrayList{
 		bool del(int i);
 		void traverse();
 
-		static void merge(ArrayList &dst, const ArrayList list1&, const ArraList list2&);
+		static void merge(ArrayList &dst, const ArrayList &list1, const ArrayList &list2){
+			dst.destroy();
+			dst.init(list1.length() + list2.length());
+			int *ptr = dst.array;
+
+			for(int i = 0, len = list1.length(); i < len; i++)
+				*ptr++ = list1.array[i];
+
+			for(int i = 0, len = list2.length(); i < len; i++)
+				*ptr++ = list2.array[i];
+		}
 
 		ArrayList& operator=(const ArrayList &orig);
 		bool operator==(const ArrayList &orig);
@@ -36,7 +46,7 @@ class ArrayList{
 		bool increase(unsigned int max);
 
 		int *array;
-		unsigned int length;
-		unsigned int capacity;
+		unsigned int len;
+		unsigned int cap;
 };
 #endif
