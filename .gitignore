@@ -1,5 +1,5 @@
 #忽略编译出来的程序和测试数据
-run/
+test/
 
 # Object files
 *.o
