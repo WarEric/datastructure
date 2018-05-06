@@ -75,6 +75,7 @@ int ArrayList::contains(int value)
 	for(int i = 0; i < len; i++, ptr++)
 		if(*ptr == value)
 			return i;
+	return -1;
 }
 
 bool ArrayList::insert(int i, int value)
@@ -119,8 +120,13 @@ bool ArrayList::del(int i)
 
 void ArrayList::traverse()
 {
+	int temp;
 	for(int i = 0, j = len-1, mid = len/2; i < mid; i++, j--)
+	{
+		temp = array[i];
 		array[i] = array[j];
+		array[j] = temp;
+	}
 }
 
 ArrayList& ArrayList::operator=(const ArrayList &orig)

@@ -32,12 +32,15 @@ class ArrayList{
 			dst.destroy();
 			dst.init(list1.length() + list2.length());
 			int *ptr = dst.array;
+			unsigned int leng = 0;
 
-			for(int i = 0, len = list1.length(); i < len; i++)
+			for(int i = 0, length = list1.length(); i < length; i++, leng++)
 				*ptr++ = list1.array[i];
 
-			for(int i = 0, len = list2.length(); i < len; i++)
+			for(int i = 0, length = list2.length(); i < length; i++, leng++)
 				*ptr++ = list2.array[i];
+
+			dst.len = leng;
 		}
 
 		ArrayList& operator=(const ArrayList &orig);
