@@ -8,9 +8,9 @@
 #include<climits>
 
 struct Node{
-	friend class ListList;
+	friend class LinkList;
 	public:
-		Node(int k):key(key), pre(nullptr), next(nullptr){}
+		Node(int k):key(k), pre(nullptr), next(nullptr){}
 	private:
 		int key;
 		Node *pre;
@@ -39,16 +39,17 @@ class LinkList{
 		bool isEmpty();
 		int getLength(){return len;}
 		int contain(int k);//-1 表示不存在
-		void traverse();
+		void reversion();
 
 		bool clear();
-		bool copy(const LinkList &orig);
 
 		bool operator==(const LinkList &orig);
 		bool operator!=(const LinkList &orig);
 
 		static bool merge(LinkList &la, LinkList &lb, LinkList &dst);
 	private:
+		bool copy(const LinkList &orig);
+
 		Node *head;
 		int len;
 };

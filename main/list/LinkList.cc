@@ -1,6 +1,7 @@
 #include<stdexcept>
+#include<climits>
 #include"LinkList.h"
-using std::rang_error;
+using std::range_error;
 
 LinkList::~LinkList()
 {
@@ -8,9 +9,11 @@ LinkList::~LinkList()
 	if(head != nullptr) delete head;
 }
 
-LinkList::ListList(const LinkList &orig)
+LinkList::LinkList(const LinkList &orig)
 {
-	clear();
+	head = new Node(INT_MAX);
+	head->next = head;
+	head->pre = head;
 	copy(orig);
 }
 
@@ -26,10 +29,10 @@ bool LinkList::insert_first(int k)
 	if(head == nullptr) return false;
 
 	Node *ptr = new Node(k);
-	ptr->next = head;
-	ptr->pre = head->pre;
-	ptr->pre->next = ptr;
-	head->pre = ptr;
+	ptr->pre = head;
+	ptr->next = head->next;
+	ptr->next->pre = ptr;
+	head->next = ptr;
 	len++;
 
 	return true;
@@ -85,7 +88,7 @@ bool LinkList::del_first(int &res)
 
 bool LinkList::del(int &res, int pos)
 {
-	if(pos >= len) return false;
+	if(pos >= len || pos < 0) return false;
 	if(head == nullptr) return false;
 
 	Node *ptr = head->next;
@@ -101,7 +104,7 @@ bool LinkList::del(int &res, int pos)
 	return true;
 }
 
-bool remove_back(int &res)
+bool LinkList::remove_back(int &res)
 {
 	if(head == nullptr) return false;
 	if(len <= 0) return false;
@@ -166,7 +169,7 @@ int LinkList::contain(int k)
 	return -1;
 }
 
-void LinkList::traverse()
+void LinkList::reversion()
 {
 	Node *ptr = head->next, *temp = nullptr;
 	while(ptr != head)
