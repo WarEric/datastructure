@@ -19,7 +19,8 @@ struct Node{
 
 class LinkList{
 	public:
-		LinkList():head(INT_MAX), len(0){}
+		LinkList():head(nullptr), len(0){ head = new Node(INT_MAX);
+		       	head->next = head; head->pre = head;}
 		~LinkList();
 		LinkList(const LinkList &orig);
 		LinkList& operator=(const LinkList &orig);
@@ -41,14 +42,14 @@ class LinkList{
 		void traverse();
 
 		bool clear();
-		bool copy(LinkList &orig);
+		bool copy(const LinkList &orig);
 
 		bool operator==(const LinkList &orig);
 		bool operator!=(const LinkList &orig);
 
 		static bool merge(LinkList &la, LinkList &lb, LinkList &dst);
 	private:
-		Node head;
+		Node *head;
 		int len;
 };
 #endif
