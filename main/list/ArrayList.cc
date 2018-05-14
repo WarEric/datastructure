@@ -118,7 +118,7 @@ bool ArrayList::del(int i)
 	return true;
 }
 
-void ArrayList::traverse()
+void ArrayList::reversion()
 {
 	int temp;
 	for(int i = 0, j = len-1, mid = len/2; i < mid; i++, j--)
@@ -153,6 +153,11 @@ bool ArrayList::operator==(const ArrayList &orig)
 		if(array[i] != orig.array[i]) return false;
 
 	return true;
+}
+
+bool ArrayList::operator!=(const ArrayList &orig)
+{
+	return !(*this == orig);
 }
 
 bool ArrayList::increase(unsigned int max)

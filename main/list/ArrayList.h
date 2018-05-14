@@ -13,6 +13,7 @@ class ArrayList{
 			len(0), cap(capacity){ array = new int[capacity];};
 		ArrayList(const ArrayList &orig);
 		~ArrayList();
+		ArrayList& operator=(const ArrayList &orig);
 
 		bool init(unsigned int cap);
 		bool destroy();
@@ -26,7 +27,7 @@ class ArrayList{
 		bool push_back(int value);
 		int pop_front();
 		bool del(int i);
-		void traverse();
+		void reversion();
 
 		static void merge(ArrayList &dst, const ArrayList &list1, const ArrayList &list2){
 			dst.destroy();
@@ -43,8 +44,8 @@ class ArrayList{
 			dst.len = leng;
 		}
 
-		ArrayList& operator=(const ArrayList &orig);
 		bool operator==(const ArrayList &orig);
+		bool operator!=(const ArrayList &orig);
 	private:
 		bool increase(unsigned int max);
 
