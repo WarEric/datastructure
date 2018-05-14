@@ -11,6 +11,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
 TESTS = LinkList_unittest
+TESTS2 = ArrayList_unittest
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -19,10 +20,10 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 
 # House-keeping build targets.
 
-all : $(TESTS)
+all : $(TESTS) $(TESTS2)
 
 clean :
-	rm -f $(TESTS) gtest.a gtest_main.a *.o
+	rm -f $(TESTS) $(TESTS2) gtest.a gtest_main.a *.o
 
 # Usually you shouldn't tweak such internal variables, indicated by a
 # trailing _.
@@ -54,4 +55,15 @@ LinkList_unittest.o : LinkList_unittest.cc \
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c LinkList_unittest.cc -I$(USER_DIR)
 
 LinkList_unittest : LinkList.o LinkList_unittest.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+
+ArrayList.o : $(USER_DIR)/ArrayList.cc $(USER_DIR)/ArrayList.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/ArrayList.cc
+
+ArrayList_unittest.o : ArrayList_unittest.cc \
+                     $(USER_DIR)/ArrayList.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ArrayList_unittest.cc -I$(USER_DIR)
+
+ArrayList_unittest : ArrayList.o ArrayList_unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
