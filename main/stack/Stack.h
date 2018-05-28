@@ -19,7 +19,7 @@ template<typename T> class StackNode{
 
 template<typename T> class Stack{
 	public:
-		Stack():len(0), top(nullptr){}
+		Stack():len(0), t(nullptr){}
 		Stack(const Stack &orig);
 		Stack<T>& operator=(const Stack &orig);
 		~Stack();
@@ -37,7 +37,7 @@ template<typename T> class Stack{
 	private:
 		StackNode<T>* copy(const Stack &src);
 		int len;
-		StackNode<T> *top;
+		StackNode<T> *t;
 };
 
 template<typename T>
@@ -47,7 +47,7 @@ Stack<T>::Stack(const Stack &orig)
 		return;
 
 	len = orig.len;
-	top = copy(orig);
+	t = copy(orig);
 }
 
 template<typename T>
@@ -56,8 +56,9 @@ Stack<T>& Stack<T>::operator=(const Stack &orig)
 	if(orig.len <= 0)
 		return *this;
 
+	clear();
 	len = orig.len;
-	top = copy(orig);
+	t = copy(orig);
 	return *this;
 }
 
@@ -73,11 +74,11 @@ bool Stack<T>::clear()
 	if(len <= 0)
 		return true;
 
-	Node<T> *ptr = top;
-	while(top != nullptr)
+	StackNode<T> *ptr = t;
+	while(t != nullptr)
 	{
-		ptr = top;
-		top = top->pre;
+		ptr = t;
+		t = t->pre;
 		delete ptr;
 		len--;
 	}
@@ -100,15 +101,15 @@ bool Stack<T>::top(T& val)
 	if(len <= 0)
 		return false;
 
-	val = top->val;
+	val = t->val;
 	return true;
 }
 
 template<typename T>
 bool Stack<T>::push(const T& val)
 {
-	StackNode<T> *ptr = new StackNode<T>(val, top);
-	top = ptr;
+	StackNode<T> *ptr = new StackNode<T>(val, t);
+	t = ptr;
 	len++;
 	return true;
 }
@@ -119,8 +120,8 @@ bool Stack<T>::pop()
 	if(len <= 0)
 	       	return false;
 
-	StackNode<T> *ptr = top;
-	top = top->pre;
+	StackNode<T> *ptr = t;
+	t = t->pre;
 	delete ptr;
 	len--;
 	return true;
@@ -132,7 +133,7 @@ bool Stack<T>::operator==(const Stack &orig)
 	if(len != orig.len)
 		return false;
 
-	StackNode<T> *pa = top, *pb = orig.top;
+	StackNode<T> *pa = t, *pb = orig.t;
 	while((pa != nullptr) && (pb != nullptr))
 	{
 		if(pa->val != pb->val)
@@ -155,20 +156,20 @@ StackNode<T>* Stack<T>::copy(const Stack &src)
 {
 	if(src.len <= 0) return nullptr;
 
-	StackNode<T> *ptr, *next, *t, *psrc = src.top;
+	StackNode<T> *ptr, *next, *t, *psrc = src.t;
 	next = new StackNode<T>(psrc->val);
 	ptr = next;
 	t = ptr;
-	psrc = psrc;
-	len++;
+	psrc = psrc->pre;
 
 	while(psrc != nullptr)
 	{
 		next = new StackNode<T>(psrc->val);
 		ptr->pre = next;
 		ptr = next;
-		len++;
+		psrc = psrc->pre;
 	}
+	ptr->pre = nullptr;
 	return t;
 }
 #endif
