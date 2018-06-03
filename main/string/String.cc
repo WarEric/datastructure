@@ -10,28 +10,29 @@
 String::String(char *chars)
 {
 	int i = 0;
-	for(char* c = chars; c; ++i, ++c);
+	for(char* c = chars; *c != '\0'; ++i, ++c);
 
-	if(!i){ 
+	if(i <= 0){ 
 		ch = nullptr; 
 		len = 0;
 	}else{
-		if(!(ch = (char *)malloc(i * sizeof(char))))
+		ch = (char *)malloc(i * sizeof(char));
+		if(ch == nullptr)
 			exit(EXIT_FAILURE);
 		
 		for(int j = 0; j < i; j++)
-			ch[i] = chars[i];
+			ch[j] = chars[j];
 
 		len = i;
 	}
 }
 
-String::String(const String &str)
+String::String(const String &str):ch(nullptr), len(0)
 {
 	copy(str);
 }
 
-String* String::operator=(const String &str)
+String& String::operator=(const String &str)
 {
 	copy(str);
 	return *this;
@@ -57,7 +58,10 @@ bool String::empty()
 
 bool String::clear()
 {
-	if(ch) free(ch);
+	if(ch != nullptr){
+	       	free(ch);
+		ch = nullptr;
+	}
 	len = 0;
 	return true;
 }
@@ -82,7 +86,7 @@ String String::sub(int pos, int length)
 bool String::concat(const String &str1, const String &str2)
 {
 	clear();
-	if(!(ch = (char *)malloc(length * sizeof(char))))
+	if(!(ch = (char *)malloc((str1.len + str2.len) * sizeof(char))))
 		exit(EXIT_FAILURE);
 	
 	int i, size;
@@ -95,6 +99,25 @@ bool String::concat(const String &str1, const String &str2)
 		ch[i] = *chars;
 
 	len  = size;
+}
+
+int String::index(int pos, const String &str)
+{
+	int i = pos, j = 0;
+	while(i < len && j < str.len)
+	{
+		if(ch[i] == str.ch[j])
+		{
+			++i;
+			++j;
+		}else{
+			i = i-j+1;
+			j = 0;
+		}
+	}
+
+	if(j >= str.len) return i - str.len;
+	else return -1;
 }
 
 bool String::insert(int pos, const String &str)
@@ -120,12 +143,13 @@ bool String::insert(int pos, const String &str)
 				ch[i+size] = ch[i];
 
 			char *chars = str.ch;
-			for(int i = pos, size = str.len; i < size; i++, chars++)
-				ch[i] = *chars;
+			for(int i = 0, size = str.len; i < size; i++)
+				ch[i+pos] = chars[i];
 			
 			len += str.len;
 		}
 	}
+
 	return true;
 }
 
@@ -147,13 +171,13 @@ bool String::append(const String &str)
 		for(int i = len-str.len; i < len; i++, chars++)
 			ch[i] = *chars;
 	}
-	return true;
 
+	return true;
 }
 
 bool String::del(int pos, int length)
 {
-	if(pos < 0 || pos >= len || length < 0 || length <= len-pos)
+	if(pos < 0 || pos >= len || length < 0 || length > len-pos)
 		return false;
 
 	if(length == 0)
@@ -180,11 +204,32 @@ bool String::copy(const String &str)
 	if(!len){
 		ch = nullptr;
 	}else{
-		if(!(ch = (char *)malloc(len * sizeof(char))))
+		ch = (char *)malloc(len * sizeof(char));
+		if(!ch)
 			exit(EXIT_FAILURE);
 
 		for(int j = 0; j < len; j++)
 			ch[j] = str.ch[j];
 	}
 	return true;
+}
+
+int String::compare(const String &str)
+{
+	for(int i = 0; i < len && i < str.len; i++)
+		if(ch[i] != str.ch[i]) return ch[i] - str.ch[i];
+	return len - str.len;
+}
+
+bool String::operator==(const String &str)
+{
+	if(compare(str) == 0)
+		return true;
+	else
+		return false;
+}
+
+bool String::operator!=(const String &str)
+{
+	return !(*this == str);
 }

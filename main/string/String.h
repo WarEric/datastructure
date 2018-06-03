@@ -18,22 +18,19 @@ class String{
 		bool empty();
 		bool clear();
 
-		String sub(int pos, int len);
+		String sub(int pos, int length);
 
 		//将str置为联接str1和str2的结果
 		bool concat(const String &str1, const String &str2);
 		
-		//返回在pos个字符后第一次与str匹配的位置；否则为0
+		//返回在pos个字符后第一次与str匹配的位置；不存在则返回负数
 		int index(int pos, const String &str);
-		
-		//将其中与match匹配的串替换为target中的串
-		bool replace(const String &match, const String &target);
 
 		//在pos之前插入str
 		bool insert(int pos, const String &str);
 
 		bool append(const String &str);
-		bool del(int pos, int len);
+		bool del(int pos, int length);
 
 		//置其内容为str的复制
 		bool copy(const String &str);
