@@ -1,5 +1,7 @@
+#include <iostream>
 #include "String.h"
 #include "gtest/gtest.h"
+
 namespace{
 
 TEST(String, Length){
@@ -134,6 +136,12 @@ TEST(String, Insert){
 
 	EXPECT_TRUE(str4.insert(0,str2));
 	EXPECT_TRUE(str4 == str2);
+
+	char a = 'a';
+	String str5("a");
+	String str6;
+	EXPECT_TRUE(str6.append(a));
+	EXPECT_TRUE(str6 == str5);
 }
 
 TEST(String, Index){
@@ -170,6 +178,14 @@ TEST(String, sub){
 
 	str3 = str1.sub(2, 10);
 	EXPECT_TRUE(str3 == empty);
+}
+
+TEST(String, Ostream){
+	String str1;
+	String str2("hello world");
+
+	std::cout << str1 << std::endl;
+	std::cout << str2 << std::endl;
 }
 
 };
