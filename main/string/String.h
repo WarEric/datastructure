@@ -6,7 +6,11 @@
  */
 #ifndef STRING_H_
 #define STRING_H_
+#include<iostream>
 class String{
+	friend std::ostream& operator<<(std::ostream &os, const String &str);
+//写出来运行不了，后面再研究
+//friend std::istream& operator>>(std::istream &in, String &str);
 	public:
 		String():ch(nullptr), len(0){}
 		String(char *chars);
@@ -30,6 +34,7 @@ class String{
 		bool insert(int pos, const String &str);
 
 		bool append(const String &str);
+		bool append(const char a);
 		bool del(int pos, int length);
 
 		//置其内容为str的复制

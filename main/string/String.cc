@@ -6,6 +6,15 @@
  */
 #include <cstdlib>
 #include "String.h"
+using std::ostream;
+
+ostream& operator<<(ostream &os, const String &str)
+{
+	for(int i = 0, size = str.len; i < size; i++)
+		os << str.ch[i];
+
+	return os;
+}
 
 String::String(char *chars)
 {
@@ -99,6 +108,7 @@ bool String::concat(const String &str1, const String &str2)
 		ch[i] = *chars;
 
 	len  = size;
+	return true;
 }
 
 int String::index(int pos, const String &str)
@@ -171,6 +181,23 @@ bool String::append(const String &str)
 		for(int i = len-str.len; i < len; i++, chars++)
 			ch[i] = *chars;
 	}
+
+	return true;
+}
+
+bool String::append(const char a)
+{
+	len += 1;
+
+	if(ch == nullptr)
+	{
+		if(!(ch = (char *)malloc(len * sizeof(char))))
+			exit(EXIT_FAILURE);
+	}else{
+		if(!(ch = (char *)realloc(ch, len * sizeof(char))))
+			exit(EXIT_FAILURE);
+	}
+	ch[len-1] = a;
 
 	return true;
 }
