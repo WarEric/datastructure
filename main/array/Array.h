@@ -7,6 +7,7 @@
 #ifndef ARRAY_H_
 #define ARRAY_H_
 #include <initializer_list>
+#include <cstdlib>
 using std::initializer_list;
 
 template<typename T> class Array{
@@ -33,7 +34,7 @@ template<typename T> class Array{
 };
 
 template<typename T>
-Array::Array(initializer_list<int> il):base(nullptr),
+Array<T>::Array(initializer_list<int> il):base(nullptr),
        bounds(nullptr), constants(nullptr)
 {
 	dim = il.size();
@@ -44,7 +45,7 @@ Array::Array(initializer_list<int> il):base(nullptr),
 
 	size_t eletotal = 1;
 	int i = 0;
-	for(auto beg = il.begin(); beg != il.end; beg++, i++)
+	for(auto beg = il.begin(); beg != il.end(); beg++, i++)
 	{
 		bounds[i] = *beg;
 		if(bounds[i] < 0) exit(EXIT_FAILURE);
@@ -62,40 +63,40 @@ Array::Array(initializer_list<int> il):base(nullptr),
 }
 
 template<typename T>
-Array::Array(constants Array &orig):base(nullptr),
+Array<T>::Array(const Array &orig):base(nullptr),
 	bounds(nullptr), constants(nullptr)
 {
 	copy(orig);
 }
 
 template<typename T>
-Array& Array::operator=(const Array &orig)
+Array<T>& Array<T>::operator=(const Array &orig)
 {
-	if(!clear()) exit(EXIT_FAILURE);
-
+	clear();
 	copy(orig);
+	return *this;
 }
 
 template<typename T>
-Array::~Array()
+Array<T>::~Array()
 {
 	clear();
 }
 
 template<typename T>
-T Array::get(initializer_list<int> il)
+T Array<T>::get(initializer_list<int> il)
 {
 	return *(base + offset(il));
 }
 
 template<typename T>
-void Array:set(T key, initializer_list<int> il)
+void Array<T>::set(T key, initializer_list<int> il)
 {
 	*(base + offset(il)) = key;
 }
 
 template<typename T>
-bool Array::operator==(const Array &orig)
+bool Array<T>::operator==(const Array &orig)
 {
 	if(dim != orig.dim) return false;
 
@@ -109,9 +110,9 @@ bool Array::operator==(const Array &orig)
 	}
 
 	T *pt = orig.base;;
-	for(int i = 0; i < total; i++)
+	for(size_t i = 0; i < total; i++)
 	{
-		if(base[i] ！= pt[i])
+		if(base[i] != pt[i])
 			return false;
 	}
 
@@ -119,13 +120,13 @@ bool Array::operator==(const Array &orig)
 }
 
 template<typename T>
-bool Array::operator!=(const Array &orig)
+bool Array<T>::operator!=(const Array &orig)
 {
 	return !(*this == orig);
 }
 
 template<typename T>
-size_t Array::offset(const initializer_list<int> &il)
+size_t Array<T>::offset(const initializer_list<int> &il)
 {
 	size_t off = 0;
 	int i = 0;
@@ -134,7 +135,8 @@ size_t Array::offset(const initializer_list<int> &il)
 	return off;
 }
 
-void clear()
+template<typename T>
+void Array<T>::clear()
 {
 	if(!base) delete[] base;
 
@@ -144,7 +146,7 @@ void clear()
 }
 
 template<typename T>
-bool Array::copy(const Array &orig)
+bool Array<T>::copy(const Array &orig)
 {
 	dim = orig.dim;
 	bounds = new int[dim];
@@ -159,12 +161,14 @@ bool Array::copy(const Array &orig)
 
 	base = new T[eletotal];
 	if(!base) return false;
-	for(int i = 0; i < eletotal; i++)
+	for(size_t i = 0; i < eletotal; i++)
 		base[i] = orig.base[i];
 
 	constants = new int[dim];
 	if(!constants) return false;
 	for(int i = 0; i < dim; i++)
 		constants[i] = orig.constants[i];
+
+	return true;
 }
 #endif
